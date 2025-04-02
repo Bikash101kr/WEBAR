@@ -1,25 +1,31 @@
+require('dotenv').config(); // Load .env first
 const express = require("express");
-const app = express();
 const mongoose = require('mongoose');
-require('dotenv').config();
-const path = require('path');
-const cors = require('cors')
+const cors = require('cors');
 
+const app = express();
 
 app.use(cors('*'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
-mongoose.connect(process.env.MONGODB_URI,{
-    })
-    .then(()=>{
-        console.log('Connected to our database server');
-    });
-    app.get('/',(req,res)=>{
-        res.send("Welcome to MARKERLESS AGUMENTED REALITY EXPERINCES");
-    });
 
-    const PORT = process.env.PORT || 3005;
-    app.listen(process.env.Port, ()=>{
-        console.log(`Server is running at localhost:${process.env.Port}`);
-    });
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('✅ Connected to MongoDB Atlas!');
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+  });
+
+// Routes
+app.get('/', (req, res) => {
+  res.send("Welcome to MARKERLESS AUGMENTED REALITY EXPERIENCES");
+});
+
+// Start server
+const PORT = process.env.PORT || 3005;
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+});
