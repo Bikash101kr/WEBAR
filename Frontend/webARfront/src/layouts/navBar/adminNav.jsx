@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import logo from '../../assets/NextXR.png';  // Import the logo from assets folder
+
 // Define theme colors
 const themeColors = {
     primaryDark: "#0A1A2F",    // Dark blue background
@@ -17,17 +19,23 @@ const AdminNavbar = () => {
 
     return (
         <header
-            className="flex justify-between items-center  px-6 py-4 "
+            className="flex justify-between items-center px-6 py-4"
             style={{ backgroundColor: themeColors.darkPurple }}
         >
             {/* Logo and Admin Panel */}
             <div className="flex items-center gap-4">
-                <img
-                    src={logo}
-                    alt="NextXR Logo"
-                    className="h-10 w-auto"
-                />
-                <span className="text-xl font-semibold text-white">Admin Panel</span>
+                <Link to="/" className="text-2xl font-extrabold" style={{
+                    background: 'linear-gradient(45deg, #00C2CB, #6C5CE7)',
+                    WebkitBackgroundClip: 'text',
+                    color: 'transparent',
+                    textShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)',
+                    marginBottom: '-5px' // Moves "WEBAR" up slightly
+                }}>
+                    WEBAR
+                </Link>
+                <span className="text-lg font-semibold text-white" style={{ marginTop: '12px' }}> {/* Increased marginTop for Admin Panel */}
+                    Admin Panel
+                </span>
             </div>
 
             {/* Actions: New Project Button and Profile Dropdown */}

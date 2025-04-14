@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import HomePage from './homepage';  // Import HomePage
 
 const Login = () => {
   // Define formData with useState
@@ -38,13 +39,18 @@ const Login = () => {
   };
 
   return (
+    <div className="relative min-h-screen bg-gray-50 p-4 sm:p-6 flex items-center justify-center">
+      {/* Render HomePage component in the background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <HomePage />
+      </div>
 
+      {/* Mosaic effect: Create pixelated blur effect */}
+      <div className="absolute inset-0 z-0 bg-black opacity-50 backdrop-blur-md mosaic-effect"></div>
 
-    
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 sm:p-6">
-      <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
-
-      {/* NextXR Button */}
+      {/* Apply styles to the form to be positioned on top of the HomePage */}
+      <div className="relative z-10 bg-white shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
+        {/* NextXR Button */}
         <div className="text-center mb-6">
           <Link to="/">
             <button className="text-xl font-bold text-blue-600 hover:text-purple-950">

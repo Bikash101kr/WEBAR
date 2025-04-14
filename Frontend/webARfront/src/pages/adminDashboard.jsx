@@ -31,8 +31,12 @@ const AdminDashboard = () => {
 
     return (
 
+
         <div className="flex min-h-screen" style={{ backgroundColor: themeColors.primaryDark, color: themeColors.textLight }}>
             {/* Sidebar */}
+            
+
+
             <aside className="w-64 p-5 flex flex-col border-r" style={{ borderColor: themeColors.primaryPurple + '40' }}>
 
                 <nav className="flex-1">
@@ -63,8 +67,6 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <main className="flex-1 p-8">
                 {/* Admin Header */}
-
-
                 {/* Content Sections */}
                 {selectedTab === "users" && (
                     <section className="rounded-xl p-6 mb-8" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>

@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./layouts/navbar";
 import AdminNavbar from "./layouts/navBar/adminNav";
-import MainBody from "./layouts/mainbody";
 import Footer from "./layouts/footer";
 import Register from "./pages/register";
 import Login from "./pages/login";
@@ -10,50 +9,55 @@ import Dashboard from "./pages/dashboard";
 import AdminDashboard from "./pages/adminDashboard";
 import Pricing from "./pages/pricing";
 import Project from "./pages/project";
+import HomePage from "./pages/homepage";
 
 function App() {
   const location = useLocation();
 
-  // Properly define routes where Navbar and Footer should not be displayed
-  const hideNavbarRoutes = ["/register", "/login"];
-  const hideFooterRoutes = ["/register", "/login"];
+  // Define routes where Navbar and Footer should not be displayed
+  const hideNavbarFooterRoutes = ["/register", "/login"];
+  const adminRoutes = ["/admindash"];
+  const dashboardRoutes = ["/dashboard"];
 
-  const showNavbar = !hideNavbarRoutes.includes(location.pathname);
-  const showFooter = !hideFooterRoutes.includes(location.pathname);
-  let NavbarComponent;
-  if (location.pathname.startsWith("/adminDashboard")) {
+  const shouldShowNavbarFooter = !hideNavbarFooterRoutes.includes(location.pathname);
+  const isAdminRoute = adminRoutes.some(route => location.pathname.startsWith(route));
+  const isDashboardRoute = dashboardRoutes.some(route => location.pathname.startsWith(route));
+
+  // Select the appropriate navbar component
+  let NavbarComponent = Navbar; // Default navbar for visitors
+  if (isAdminRoute) {
     NavbarComponent = AdminNavbar;
-  } else if (location.pathname.startsWith("/dashboard")) {
-    NavbarComponent = DashboardNavbar;
-  } else {
-    NavbarComponent = Navbar; // Default Navbar for visitors
+  } else if (isDashboardRoute) {
+    // If you have a specific dashboard navbar, use it here
+    NavbarComponent = Navbar; // Or create DashboardNavbar if needed
   }
 
+  // Special case for homepage - don't show regular navbar/footer
+  const isHomePage = location.pathname === "/";
+
   return (
-    <div className="  min-h-screen">
-      {/* Conditionally render Navbar */}
-      {showNavbar && (
+    <div className="min-h-screen flex flex-col">
+      {/* Conditionally render Navbar - not on homepage */}
+      {shouldShowNavbarFooter && !isHomePage && <NavbarComponent />}
 
-        <NavbarComponent />
-
-      )}
       {/* Main content area */}
-      <div className="mainbody-container flex-grow bg-gray-100 ">
+      <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<MainBody />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/adminDashboard" element={<AdminDashboard />} />
+          <Route path="/admindash" element={<AdminDashboard />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/project" element={<Project />} />
         </Routes>
-      </div>
-      {/* Conditionally render Footer */}
-      {showFooter && (
-        <div className="footer-container bg-gray-800 text-white p-4 text-center">
+      </main>
+
+      {/* Conditionally render Footer - not on homepage */}
+      {shouldShowNavbarFooter && !isHomePage && (
+        <footer className="bg-gray-800 text-white p-4 text-center">
           <Footer />
-        </div>
+        </footer>
       )}
     </div>
   );
