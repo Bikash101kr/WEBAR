@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import HomePage from './homepage';  // Import HomePage
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import HomePage from './homepage';
 
 const Login = () => {
-  // Define formData with useState
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
     rememberMe: false,
   });
 
-  // Update state when inputs change
+  const [error, setError] = useState("");
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -19,38 +22,54 @@ const Login = () => {
     });
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    // Add further form submission logic here (e.g., API call)
+    setError("");
+
+    try {
+      const response = await axios.post("http://localhost:3005/api/v1/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      const { token, data } = response.data;
+
+      // Save token and user details in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", data.role); // Corrected here
+      localStorage.setItem("data", JSON.stringify(data));
+
+      // Redirect based on role
+      if (data.role === "admin") { // Using comparison operator here
+        navigate("/admindash");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || "Login failed";
+      setError(message);
+      console.error("Login error:", err);
+    }
   };
 
-  // Handle Google Sign-In
   const handleGoogleSignIn = () => {
     console.log("Google Sign-In clicked");
-    // Add Google authentication logic here
+    // Future: Add Google OAuth integration
   };
 
-  // Handle Apple Sign-In
   const handleAppleSignIn = () => {
     console.log("Apple Sign-In clicked");
-    // Add Apple authentication logic here
+    // Future: Add Apple OAuth integration
   };
 
   return (
     <div className="relative min-h-screen bg-gray-50 p-4 sm:p-6 flex items-center justify-center">
-      {/* Render HomePage component in the background */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <HomePage />
       </div>
-
-      {/* Mosaic effect: Create pixelated blur effect */}
       <div className="absolute inset-0 z-0 bg-black opacity-50 backdrop-blur-md mosaic-effect"></div>
 
-      {/* Apply styles to the form to be positioned on top of the HomePage */}
       <div className="relative z-10 bg-white shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
-        {/* NextXR Button */}
         <div className="text-center mb-6">
           <Link to="/">
             <button className="text-xl font-bold text-blue-600 hover:text-purple-950">
@@ -61,25 +80,27 @@ const Login = () => {
 
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login Page</h1>
 
-        {/* Login Form */}
+        {error && (
+          <div className="mb-4 text-red-600 text-center font-medium">{error}</div>
+        )}
+
         <form className="mb-6" onSubmit={handleSubmit}>
-          {/* Username Field */}
           <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-              Username
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
             </label>
             <input
               type="text"
-              id="username"
-              name="username"
-              placeholder="Enter your username"
-              value={formData.username}
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
               onChange={handleInputChange}
+              required
               className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Password Field */}
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -91,11 +112,11 @@ const Login = () => {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleInputChange}
+              required
               className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Remember Me Checkbox */}
           <div className="flex items-center mb-4">
             <input
               type="checkbox"
@@ -110,7 +131,6 @@ const Login = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="bg-blue-500 text-white font-semibold rounded-lg px-4 py-2 w-full hover:bg-blue-600 transition"
@@ -119,14 +139,12 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center mb-6">
           <hr className="flex-grow border-gray-300" />
           <span className="px-2 text-gray-500 text-sm">OR</span>
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        {/* Social Sign-In Buttons */}
         <div className="space-y-4">
           <button
             onClick={handleGoogleSignIn}
@@ -142,14 +160,10 @@ const Login = () => {
           </button>
         </div>
 
-        {/* Sign Up Redirect */}
         <div className="text-center mt-6">
           <p className="text-gray-700 text-sm">
             Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-blue-500 hover:underline transition"
-            >
+            <Link to="/register" className="text-blue-500 hover:underline transition">
               Sign Up
             </Link>
           </p>

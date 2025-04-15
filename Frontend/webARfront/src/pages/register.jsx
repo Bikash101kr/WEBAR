@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
-import HomePage from './homepage';  // Import HomePage (or replace with desired background component)
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import axios from "axios"; // Axios for HTTP requests
+import HomePage from './homepage';
 
 const Register = () => {
+  const navigate = useNavigate(); // For redirecting after success
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -21,35 +24,47 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validation for policies checkbox
+
     if (!formData.agreeToPolicies) {
       alert("You must agree to the Privacy Policy and Terms of Service!");
       return;
     }
-    // Password matching validation
+
     if (formData.password !== formData.passwordConfirmation) {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Registration Form Data Submitted:", formData);
-    // Add further form submission logic here (e.g., API call)
+
+    try {
+      const response = await axios.post("http://localhost:3005/api/v1/auth/register", {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.workEmail, // match backend expected field name
+        password: formData.password,
+        confirmPassword: formData.passwordConfirmation,
+        agreedToPrivacyPolicy: formData.agreeToPolicies,
+      });
+
+      console.log("Registration successful:", response.data);
+      alert("Registration successful!");
+      navigate("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Registration failed:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Registration failed. Please try again.");
+    }
   };
 
   return (
     <div className="relative min-h-screen bg-gray-50 p-4 sm:p-6 flex items-center justify-center">
-      {/* Render HomePage component in the background */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <HomePage />
       </div>
 
-      {/* Mosaic effect: Create pixelated blur effect */}
       <div className="absolute inset-0 z-0 bg-black opacity-50 backdrop-blur-md mosaic-effect"></div>
 
-      {/* Form Container */}
       <div className="relative z-10 bg-white shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
-        {/* NextXR Button */}
         <div className="text-center mb-6">
           <Link to="/">
             <button className="text-xl font-bold text-blue-600 hover:text-purple-950">
@@ -60,9 +75,7 @@ const Register = () => {
 
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h1>
 
-        {/* Registration Form */}
         <form className="mb-6" onSubmit={handleSubmit}>
-          {/* First Name Field */}
           <div className="mb-4">
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
               First Name
@@ -78,7 +91,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Last Name Field */}
           <div className="mb-4">
             <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
               Last Name
@@ -94,7 +106,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Work Email Field */}
           <div className="mb-4">
             <label htmlFor="workEmail" className="block text-sm font-medium text-gray-700 mb-1">
               Work Email
@@ -110,7 +121,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Password Field */}
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -126,7 +136,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Password Confirmation Field */}
           <div className="mb-4">
             <label htmlFor="passwordConfirmation" className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
@@ -142,7 +151,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Privacy Policy and Terms of Service */}
           <div className="flex items-center mb-4">
             <input
               type="checkbox"
@@ -157,7 +165,6 @@ const Register = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="bg-blue-500 text-white font-semibold rounded-lg px-4 py-2 w-full hover:bg-blue-600 transition"
@@ -166,7 +173,6 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Already Have an Account? */}
         <p className="text-sm text-center text-gray-600">
           Already have an account?{" "}
           <a href="/login" className="text-blue-500 hover:underline">
