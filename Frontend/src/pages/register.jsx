@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
 import axios from "axios"; // Axios for HTTP requests
 import HomePage from './homepage';
-
+import API from "../services/api";
 const Register = () => {
   const navigate = useNavigate(); // For redirecting after success
 
@@ -38,7 +38,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3005/api/v1/auth/register", {
+      const response = await API.post("/auth/register", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.workEmail, // match backend expected field name

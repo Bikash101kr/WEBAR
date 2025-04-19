@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import HomePage from './homepage';
+import API from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:3005/api/v1/auth/login", {
+      const response = await API.post("/auth/login", {
         email: formData.email,
         password: formData.password,
       });
