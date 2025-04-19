@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import AddUserModal from "../modal/AddUserModal";
+import EditUserModal from "../modal/EditUserModal";
 
 const AdminDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,6 +15,9 @@ const AdminDashboard = () => {
     const [error, setError] = useState(null);
     const [newProject, setNewProject] = useState({ name: "", type: "" });
     const addUserButtonRef = useRef(null);
+    const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const editUserButtonRefs = useRef({});
     const navigate = useNavigate();
     
 
@@ -155,7 +159,12 @@ const AdminDashboard = () => {
                                                 <button
                                                     style={{ color: themeColors.secondaryCyan }}
                                                     className="hover:opacity-80"
-                                                    onClick={() => navigate(`/admin/users/${user._id}/edit`)}
+                                                    onClick={(e) => {
+                                                        editUserButtonRefs.current[user._id] = e.currentTarget;
+                                                        setSelectedUser(user);
+                                                        setIsEditUserModalOpen(true);
+                                                    }}
+                                                    ref={(el) => (editUserButtonRefs.current[user._id] = el)}
                                                 >
                                                     Edit
                                                 </button>
@@ -172,13 +181,6 @@ const AdminDashboard = () => {
                                 </tbody>
                             </table>
                         </div>
-                        {isAddUserModalOpen && (
-                            <AddUserModal
-                                onClose={() => setIsAddUserModalOpen(false)}
-                                onUserAdded={(newUser) => setUsers(prev => [...prev, newUser])}
-                                positionRef={addUserButtonRef}
-                            />
-                        )}
                     </section>
                 ) : selectedTab === "projects" ? (
                     <section className="rounded-xl p-6" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>
@@ -220,6 +222,7 @@ const AdminDashboard = () => {
                     </section>
                 )}
 
+                {/* Modals */}
                 {isModalOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                         <div className="w-full max-w-md p-6 rounded-xl" style={{ backgroundColor: themeColors.primaryDark, border: `1px solid ${themeColors.primaryPurple}` }}>
@@ -259,6 +262,30 @@ const AdminDashboard = () => {
                             </form>
                         </div>
                     </div>
+                )}
+
+                {isAddUserModalOpen && (
+                    <AddUserModal
+                        onClose={() => setIsAddUserModalOpen(false)}
+                        onUserAdded={(newUser) => setUsers(prev => [...prev, newUser])}
+                        positionRef={addUserButtonRef}
+                    />
+                )}
+
+                {isEditUserModalOpen && selectedUser && (
+                    <EditUserModal
+                        user={selectedUser}
+                        onClose={() => {
+                            setIsEditUserModalOpen(false);
+                            setSelectedUser(null);
+                        }}
+                        onUserUpdated={(updatedUser) => {
+                            setUsers(users.map(user => 
+                                user._id === updatedUser._id ? updatedUser : user
+                            ));
+                        }}
+                        positionRef={{ current: editUserButtonRefs.current[selectedUser._id] }}
+                    />
                 )}
             </main>
         </div>

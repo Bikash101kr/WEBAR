@@ -128,7 +128,8 @@ exports.updateUser = async (req, res, next) => {
     const fieldsToUpdate = {
       firstName: req.body.firstName || user.firstName,
       lastName: req.body.lastName || user.lastName,
-      email: req.body.email || user.email
+      email: req.body.email || user.email,
+      role: req.body.role || user.role,
     };
 
     user = await User.findByIdAndUpdate(req.params.id, fieldsToUpdate, {
