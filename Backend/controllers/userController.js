@@ -2,11 +2,68 @@
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 
+// @desc    Create user (Admin only)
+// @route   POST /api/v1/users
+// @access  Private/Admin
+exports.createUser = async (req, res, next) => {
+  try {
+    // Verify requesting user is admin
+    if (req.user.role !== 'admin') {
+      return next(
+        new ErrorResponse(`User ${req.user.id} is not authorized to create users`, 403)
+      );
+    }
+
+    const { firstName, lastName, email, password, role } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName || !email || !password) {
+      return next(
+        new ErrorResponse('Please provide firstName, lastName, email and password', 400)
+      );
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return next(
+        new ErrorResponse('Email is already registered', 400)
+      );
+    }
+
+    // Create user
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      role: role || 'user' // Default to 'user' if role not specified
+    });
+
+    // Remove sensitive data before sending response
+    user.password = undefined;
+
+    res.status(201).json({
+      success: true,
+      data: user
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc    Get all users
 // @route   GET /api/v1/users
 // @access  Private/Admin
 exports.getUsers = async (req, res, next) => {
   try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return next(
+        new ErrorResponse(`User ${req.user.id} is not authorized to access all users`, 403)
+      );
+    }
+
     const users = await User.find().select('-password');
     res.status(200).json({
       success: true,
