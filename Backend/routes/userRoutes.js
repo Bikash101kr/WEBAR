@@ -9,11 +9,11 @@ const {
 } = require('../controllers/userController');
 
 const { protect, authorize } = require('../middleware/auth');
-
+router.use(protect);
 // Only admin can view all users
 router.route('/')
   .get(protect, authorize('admin'), getUsers)
-  .post(createUser); // You might want to protect this too
+  .post(authorize('admin'), createUser)
 
 router.route('/:id')
   .get(protect, authorize('admin'), getUser)

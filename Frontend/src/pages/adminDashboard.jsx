@@ -1,22 +1,22 @@
 import { themeColors } from '../config/theme';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import AddUserModal from "../modal/AddUserModal";
 
 const AdminDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTab, setSelectedTab] = useState("users");
+    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
     const [users, setUsers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [newProject, setNewProject] = useState({
-        name: "",
-        type: ""
-    });
+    const [newProject, setNewProject] = useState({ name: "", type: "" });
+    const addUserButtonRef = useRef(null);
     const navigate = useNavigate();
+    
 
-    // Fetch data based on selected tab
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -42,7 +42,6 @@ const AdminDashboard = () => {
         fetchData();
     }, [selectedTab, navigate]);
 
-    // Handle user deletion
     const handleDeleteUser = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
@@ -54,7 +53,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // Handle project creation
     const handleCreateProject = async (e) => {
         e.preventDefault();
         try {
@@ -67,7 +65,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // Handle project deletion
     const handleDeleteProject = async (projectId) => {
         if (window.confirm('Are you sure you want to delete this project?')) {
             try {
@@ -79,16 +76,11 @@ const AdminDashboard = () => {
         }
     };
 
-    // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewProject(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setNewProject(prev => ({ ...prev, [name]: value }));
     };
 
-    // Handle logout
     const handleLogout = async () => {
         try {
             await API.get('/auth/logout');
@@ -101,25 +93,14 @@ const AdminDashboard = () => {
 
     return (
         <div className="flex min-h-screen" style={{ backgroundColor: themeColors.primaryDark, color: themeColors.textLight }}>
-            {/* Sidebar */}
             <aside className="w-64 p-5 flex flex-col border-r" style={{ borderColor: themeColors.primaryPurple + '40' }}>
-                
-
                 <nav className="flex-1">
                     <ul className="space-y-3">
-                        {[
-                            { label: "📊 Dashboard", tab: "dashboard" },
-                            { label: "👥 Users", tab: "users" },
-                            { label: "📂 Projects", tab: "projects" },
-                            { label: "⚙️ Settings", tab: "settings" },
-                        ].map((item) => (
+                        {[{ label: "📊 Dashboard", tab: "dashboard" }, { label: "👥 Users", tab: "users" }, { label: "📂 Projects", tab: "projects" }, { label: "⚙️ Settings", tab: "settings" }].map((item) => (
                             <li key={item.tab}>
                                 <button
                                     onClick={() => setSelectedTab(item.tab)}
-                                    style={{
-                                        backgroundColor: selectedTab === item.tab ? themeColors.primaryPurple + '30' : 'transparent',
-                                        color: selectedTab === item.tab ? themeColors.textLight : themeColors.textMuted
-                                    }}
+                                    style={{ backgroundColor: selectedTab === item.tab ? themeColors.primaryPurple + '30' : 'transparent', color: selectedTab === item.tab ? themeColors.textLight : themeColors.textMuted }}
                                     className="w-full text-left p-3 rounded-lg transition-colors hover:bg-purple-900/20"
                                 >
                                     {item.label}
@@ -128,11 +109,8 @@ const AdminDashboard = () => {
                         ))}
                     </ul>
                 </nav>
-
-                
             </aside>
 
-            {/* Main Content */}
             <main className="flex-1 p-8 overflow-auto">
                 {error && (
                     <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: themeColors.accentPink + '20' }}>
@@ -142,17 +120,17 @@ const AdminDashboard = () => {
 
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" 
-                            style={{ borderColor: themeColors.primaryPurple }} />
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: themeColors.primaryPurple }} />
                     </div>
                 ) : selectedTab === "users" ? (
                     <section className="rounded-xl p-6 mb-8" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-semibold">User Management</h2>
                             <button
+                                ref={addUserButtonRef}
                                 style={{ backgroundColor: themeColors.secondaryCyan }}
                                 className="px-4 py-2 rounded-lg font-medium hover:opacity-90"
-                                onClick={() => navigate('/admindash/users/new')}
+                                onClick={() => setIsAddUserModalOpen(true)}
                             >
                                 ➕ Add New User
                             </button>
@@ -169,11 +147,7 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody>
                                     {users.map((user) => (
-                                        <tr
-                                            key={user._id}
-                                            className="border-b"
-                                            style={{ borderColor: themeColors.primaryPurple + '20' }}
-                                        >
+                                        <tr key={user._id} className="border-b" style={{ borderColor: themeColors.primaryPurple + '20' }}>
                                             <td className="p-3">{user.firstName} {user.lastName}</td>
                                             <td className="p-3" style={{ color: themeColors.textMuted }}>{user.email}</td>
                                             <td className="p-3 capitalize">{user.role}</td>
@@ -198,6 +172,13 @@ const AdminDashboard = () => {
                                 </tbody>
                             </table>
                         </div>
+                        {isAddUserModalOpen && (
+                            <AddUserModal
+                                onClose={() => setIsAddUserModalOpen(false)}
+                                onUserAdded={(newUser) => setUsers(prev => [...prev, newUser])}
+                                positionRef={addUserButtonRef}
+                            />
+                        )}
                     </section>
                 ) : selectedTab === "projects" ? (
                     <section className="rounded-xl p-6" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>
@@ -208,16 +189,12 @@ const AdminDashboard = () => {
                                 className="px-4 py-2 rounded-lg font-medium hover:opacity-90"
                                 onClick={() => setIsModalOpen(true)}
                             >
-                               ➕ New Project
+                                ➕ New Project
                             </button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {projects.map((project) => (
-                                <div
-                                    key={project._id}
-                                    className="p-4 rounded-lg hover:bg-purple-900/10 transition-colors relative"
-                                    style={{ border: `1px solid ${themeColors.primaryPurple}20` }}
-                                >
+                                <div key={project._id} className="p-4 rounded-lg hover:bg-purple-900/10 transition-colors relative" style={{ border: `1px solid ${themeColors.primaryPurple}20` }}>
                                     <button
                                         onClick={() => handleDeleteProject(project._id)}
                                         style={{ color: themeColors.accentPink }}
@@ -228,13 +205,9 @@ const AdminDashboard = () => {
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <h3 className="font-medium">{project.name}</h3>
-                                            <p className="text-sm" style={{ color: themeColors.textMuted }}>
-                                                {project.type}
-                                            </p>
+                                            <p className="text-sm" style={{ color: themeColors.textMuted }}>{project.type}</p>
                                         </div>
-                                        <span className="text-sm" style={{ color: themeColors.textMuted }}>
-                                            {new Date(project.createdAt).toLocaleDateString()}
-                                        </span>
+                                        <span className="text-sm" style={{ color: themeColors.textMuted }}>{new Date(project.createdAt).toLocaleDateString()}</span>
                                     </div>
                                 </div>
                             ))}
@@ -243,22 +216,13 @@ const AdminDashboard = () => {
                 ) : (
                     <section className="rounded-xl p-6" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>
                         <h2 className="text-xl font-semibold">Welcome to Admin Dashboard</h2>
-                        <p className="mt-4" style={{ color: themeColors.textMuted }}>
-                            Select a section from the sidebar to manage users or projects.
-                        </p>
+                        <p className="mt-4" style={{ color: themeColors.textMuted }}>Select a section from the sidebar to manage users or projects.</p>
                     </section>
                 )}
 
-                {/* New Project Modal */}
                 {isModalOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div
-                            className="w-full max-w-md p-6 rounded-xl"
-                            style={{
-                                backgroundColor: themeColors.primaryDark,
-                                border: `1px solid ${themeColors.primaryPurple}`
-                            }}
-                        >
+                        <div className="w-full max-w-md p-6 rounded-xl" style={{ backgroundColor: themeColors.primaryDark, border: `1px solid ${themeColors.primaryPurple}` }}>
                             <h2 className="text-2xl font-bold mb-4">Create New Project</h2>
                             <form onSubmit={handleCreateProject}>
                                 <input
@@ -268,10 +232,7 @@ const AdminDashboard = () => {
                                     value={newProject.name}
                                     onChange={handleInputChange}
                                     className="w-full p-3 rounded-lg focus:ring-2 mb-4"
-                                    style={{
-                                        backgroundColor: themeColors.primaryPurple + '15',
-                                        color: themeColors.textLight
-                                    }}
+                                    style={{ backgroundColor: themeColors.primaryPurple + '15', color: themeColors.textLight }}
                                     required
                                 />
                                 <select
@@ -279,10 +240,7 @@ const AdminDashboard = () => {
                                     value={newProject.type}
                                     onChange={handleInputChange}
                                     className="w-full p-3 rounded-lg focus:ring-2 mb-4"
-                                    style={{
-                                        backgroundColor: themeColors.primaryPurple + '15',
-                                        color: themeColors.textLight
-                                    }}
+                                    style={{ backgroundColor: themeColors.primaryPurple + '15', color: themeColors.textLight }}
                                     required
                                 >
                                     <option value="">Select Project Type</option>
@@ -291,22 +249,10 @@ const AdminDashboard = () => {
                                     <option value="AI Integration">AI Integration</option>
                                 </select>
                                 <div className="flex gap-4">
-                                    <button
-                                        type="submit"
-                                        style={{ backgroundColor: themeColors.secondaryCyan }}
-                                        className="flex-1 p-3 rounded-lg font-medium hover:opacity-90"
-                                    >
+                                    <button type="submit" style={{ backgroundColor: themeColors.secondaryCyan }} className="flex-1 p-3 rounded-lg font-medium hover:opacity-90">
                                         Create Project
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setIsModalOpen(false);
-                                            setNewProject({ name: "", type: "" });
-                                        }}
-                                        style={{ backgroundColor: themeColors.accentPink }}
-                                        className="flex-1 p-3 rounded-lg font-medium hover:opacity-90"
-                                    >
+                                    <button type="button" onClick={() => { setIsModalOpen(false); setNewProject({ name: "", type: "" }); }} style={{ backgroundColor: themeColors.accentPink }} className="flex-1 p-3 rounded-lg font-medium hover:opacity-90">
                                         Cancel
                                     </button>
                                 </div>
