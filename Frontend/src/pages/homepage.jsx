@@ -55,10 +55,10 @@ const HomePage = () => {
     const howItWorks = [
         {
             id: 7,
-            title: "1. Marker Detection",
+            title: "1. Marker Less Detection",
             category: "Technology",
             previewImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
-            description: "Our system recognizes images or objects to anchor AR content"
+            description: "Our system  does not require to recognize images or objects to anchor AR content"
         },
         {
             id: 8,
@@ -76,10 +76,10 @@ const HomePage = () => {
         },
         {
             id: 10,
-            title: "4. Cross-Platform",
+            title: "4. Cross-platform responsiveness",
             category: "Technology",
             previewImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4",
-            description: "Compatible with both iOS and Android devices"
+            description: "Compatible with various screen sizes and devices"
         },
         {
             id: 11,
