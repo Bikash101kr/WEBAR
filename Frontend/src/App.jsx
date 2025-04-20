@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Navbar from "./layouts/navbar";
+import UserNavbar from "./layouts/navBar/userNav";
 import AdminNavbar from "./layouts/navBar/adminNav";
 import Footer from "./layouts/footer";
 import Register from "./pages/register";
@@ -24,12 +24,12 @@ function App() {
   const isDashboardRoute = dashboardRoutes.some(route => location.pathname.startsWith(route));
 
   // Select the appropriate navbar component
-  let NavbarComponent = Navbar; // Default navbar for visitors
+  let NavbarComponent = UserNavbar; // Default navbar for visitors
   if (isAdminRoute) {
     NavbarComponent = AdminNavbar;
   } else if (isDashboardRoute) {
     // If you have a specific dashboard navbar, use it here
-    NavbarComponent = Navbar; // Or create DashboardNavbar if needed
+    NavbarComponent = UserNavbar; // Or create DashboardNavbar if needed
   }
 
   // Special case for homepage - don't show regular navbar/footer

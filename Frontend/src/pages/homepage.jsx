@@ -1,20 +1,11 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowRight, FiPlay, FiSearch } from "react-icons/fi";
+import { themeColors } from "../config/theme";
 
 const HomePage = () => {
-    // Color scheme from nextxrgroup.com.au
-    const themeColors = {
-        primaryDark: "#0A1A2F",
-        darkPurple: "#2B1A5D",   // Dark blue background
-        primaryPurple: "#6C5CE7",  // Main purple
-        secondaryCyan: "#00C2CB",  // Accent cyan
-        accentPink: "#FF6B6B",     // Accent pink
-        textLight: "#FFFFFF",      // White text
-        textMuted: "#A8A8A8"       // Gray text
-    };
-
-    const [searchQuery, setSearchQuery] = useState("");
+    
+  //  const [searchQuery, setSearchQuery] = useState("");
 
     // Sample AR experiences
     const featuredExperiences = [

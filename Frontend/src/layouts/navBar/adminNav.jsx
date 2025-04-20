@@ -4,7 +4,7 @@ import { themeColors } from '../../config/theme';
 
 const AdminNavbar = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    //const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <header

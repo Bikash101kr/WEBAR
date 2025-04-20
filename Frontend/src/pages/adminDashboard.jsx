@@ -85,22 +85,22 @@ const AdminDashboard = () => {
         setNewProject(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleLogout = async () => {
-        try {
-            await API.get('/auth/logout');
-            localStorage.removeItem('token');
-            navigate('/login');
-        } catch (err) {
-            setError('Failed to logout');
-        }
-    };
+    // const handleLogout = async () => {
+    //     try {
+    //         await API.get('/auth/logout');
+    //         localStorage.removeItem('token');
+    //         navigate('/login');
+    //     } catch (err) {
+    //         setError('Failed to logout');
+    //     }
+    // };
 
     return (
         <div className="flex min-h-screen" style={{ backgroundColor: themeColors.primaryDark, color: themeColors.textLight }}>
             <aside className="w-64 p-5 flex flex-col border-r" style={{ borderColor: themeColors.primaryPurple + '40' }}>
                 <nav className="flex-1">
                     <ul className="space-y-3">
-                        {[{ label: "📊 Dashboard", tab: "dashboard" }, { label: "👥 Users", tab: "users" }, { label: "📂 Projects", tab: "projects" }, { label: "⚙️ Settings", tab: "settings" }].map((item) => (
+                        {[{ label: "🏠 Home",tab: "home" }, { label: "👥 Users", tab: "users" }, { label: "📂 Projects", tab: "projects" }, { label: "⚙️ Settings", tab: "settings" }].map((item) => (
                             <li key={item.tab}>
                                 <button
                                     onClick={() => setSelectedTab(item.tab)}
