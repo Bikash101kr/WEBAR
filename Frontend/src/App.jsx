@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import UserNavbar from "./layouts/navBar/userNav";
 import AdminNavbar from "./layouts/navBar/adminNav";
+import Navbar from "./layouts/navbar";
 import Footer from "./layouts/footer";
 import Register from "./pages/register";
 import Login from "./pages/login";
@@ -18,20 +19,26 @@ function App() {
   const hideNavbarFooterRoutes = ["/register", "/login"];
   const adminRoutes = ["/admindash"];
   const dashboardRoutes = ["/dashboard"];
+  const normalRoutes = []
 
   const shouldShowNavbarFooter = !hideNavbarFooterRoutes.includes(location.pathname);
   const isAdminRoute = adminRoutes.some(route => location.pathname.startsWith(route));
   const isDashboardRoute = dashboardRoutes.some(route => location.pathname.startsWith(route));
+  const isNormalRoute = normalRoutes.some(route => location.pathname.startsWith(route));
 
   // Select the appropriate navbar component
-  let NavbarComponent = UserNavbar; // Default navbar for visitors
+  let NavbarComponent = Navbar; // Default navbar for visitors
   if (isAdminRoute) {
     NavbarComponent = AdminNavbar;
-  } else if (isDashboardRoute) {
+  }  if (isDashboardRoute) {
     // If you have a specific dashboard navbar, use it here
     NavbarComponent = UserNavbar; // Or create DashboardNavbar if needed
   }
+else if (isNormalRoute) {
+  NavbarComponent = Navbar;
+    
 
+}
   // Special case for homepage - don't show regular navbar/footer
   const isHomePage = location.pathname === "/";
 
