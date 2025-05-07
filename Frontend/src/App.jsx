@@ -11,6 +11,8 @@ import AdminDashboard from "./pages/adminDashboard";
 import Pricing from "./pages/pricing";
 import Project from "./pages/project";
 import HomePage from "./pages/homepage";
+import ProjectEditorNavbar from "./layouts/navBar/porjectEditor";
+import ProjectEditor from "./pages/projectEditor";
 
 function App() {
   const location = useLocation();
@@ -19,26 +21,27 @@ function App() {
   const hideNavbarFooterRoutes = ["/register", "/login"];
   const adminRoutes = ["/admindash"];
   const dashboardRoutes = ["/dashboard"];
-  const normalRoutes = []
+  const projectEditorRoutes = ["/project/projectEditor"];
+  const normalRoutes = [];
 
   const shouldShowNavbarFooter = !hideNavbarFooterRoutes.includes(location.pathname);
   const isAdminRoute = adminRoutes.some(route => location.pathname.startsWith(route));
   const isDashboardRoute = dashboardRoutes.some(route => location.pathname.startsWith(route));
+  const isProjectEditorRoute = projectEditorRoutes.some(route => location.pathname.startsWith(route));
   const isNormalRoute = normalRoutes.some(route => location.pathname.startsWith(route));
 
   // Select the appropriate navbar component
   let NavbarComponent = Navbar; // Default navbar for visitors
   if (isAdminRoute) {
     NavbarComponent = AdminNavbar;
-  }  if (isDashboardRoute) {
-    // If you have a specific dashboard navbar, use it here
-    NavbarComponent = UserNavbar; // Or create DashboardNavbar if needed
+  } else if (isDashboardRoute) {
+    NavbarComponent = UserNavbar;
+  } else if (isProjectEditorRoute) {
+    NavbarComponent = ProjectEditorNavbar;
+  } else if (isNormalRoute) {
+    NavbarComponent = Navbar;
   }
-else if (isNormalRoute) {
-  NavbarComponent = Navbar;
-    
 
-}
   // Special case for homepage - don't show regular navbar/footer
   const isHomePage = location.pathname === "/";
 
@@ -57,11 +60,12 @@ else if (isNormalRoute) {
           <Route path="/admindash" element={<AdminDashboard />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/project" element={<Project />} />
+          <Route path="/project/projectEditor/:projectId" element={<ProjectEditor />} />
         </Routes>
       </main>
 
       {/* Conditionally render Footer - not on homepage */}
-      {shouldShowNavbarFooter && !isHomePage && (
+      {shouldShowNavbarFooter && !isHomePage && !isProjectEditorRoute && (
         <footer className="bg-gray-800 text-white p-4 text-center">
           <Footer />
         </footer>

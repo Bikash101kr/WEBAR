@@ -20,7 +20,7 @@ exports.protect = async (req, res, next) => {
   try {
     // Verify token
     const decoded = jwt.verify(token, config.JWT_SECRET);
-    
+
     // Check if user still exists
     req.user = await User.findById(decoded.id);
     if (!req.user) {
@@ -40,11 +40,21 @@ exports.authorize = (...roles) => {
     if (!roles.includes(req.user.role)) {
       return next(
         new ErrorResponse(
-          `User role ${req.user.role} is not authorized to access this route`, 
+          `User role ${req.user.role} is not authorized to access this route`,
           403
         )
       );
     }
     next();
   };
+};
+
+// Logout route - clear the token
+exports.logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Lax',
+  });
+  res.status(200).json({ success: true, message: 'Logged out successfully' });
 };

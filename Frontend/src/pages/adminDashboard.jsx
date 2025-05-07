@@ -2,8 +2,9 @@ import { themeColors } from '../config/theme';
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-import AddUserModal from "../modal/AddUserModal";
-import EditUserModal from "../modal/EditUserModal";
+import AddUserModal from '../modal/addusermodal';
+import { FiX } from "react-icons/fi";
+import EditUserModal from '../modal/editusermodal';
 
 const AdminDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +20,6 @@ const AdminDashboard = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const editUserButtonRefs = useRef({});
     const navigate = useNavigate();
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,22 +85,12 @@ const AdminDashboard = () => {
         setNewProject(prev => ({ ...prev, [name]: value }));
     };
 
-    // const handleLogout = async () => {
-    //     try {
-    //         await API.get('/auth/logout');
-    //         localStorage.removeItem('token');
-    //         navigate('/login');
-    //     } catch (err) {
-    //         setError('Failed to logout');
-    //     }
-    // };
-
     return (
         <div className="flex min-h-screen" style={{ backgroundColor: themeColors.primaryDark, color: themeColors.textLight }}>
             <aside className="w-64 p-5 flex flex-col border-r" style={{ borderColor: themeColors.primaryPurple + '40' }}>
                 <nav className="flex-1">
                     <ul className="space-y-3">
-                        {[{ label: "🏠 Home",tab: "home" }, { label: "👥 Users", tab: "users" }, { label: "📂 Projects", tab: "projects" }, { label: "⚙️ Settings", tab: "settings" }].map((item) => (
+                        {[{ label: "🏠 Home", tab: "home" }, { label: "👥 Users", tab: "users" }, { label: "📂 Projects", tab: "projects" }, { label: "⚙️ Settings", tab: "settings" }].map((item) => (
                             <li key={item.tab}>
                                 <button
                                     onClick={() => setSelectedTab(item.tab)}
@@ -183,38 +173,55 @@ const AdminDashboard = () => {
                         </div>
                     </section>
                 ) : selectedTab === "projects" ? (
-                    <section className="rounded-xl p-6" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-semibold">Project Management</h2>
-                            <button
-                                style={{ backgroundColor: themeColors.secondaryCyan }}
-                                className="px-4 py-2 rounded-lg font-medium hover:opacity-90"
-                                onClick={() => setIsModalOpen(true)}
-                            >
-                                ➕ New Project
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {projects.map((project) => (
-                                <div key={project._id} className="p-4 rounded-lg hover:bg-purple-900/10 transition-colors relative" style={{ border: `1px solid ${themeColors.primaryPurple}20` }}>
-                                    <button
-                                        onClick={() => handleDeleteProject(project._id)}
-                                        style={{ color: themeColors.accentPink }}
-                                        className="absolute top-2 right-2 hover:opacity-80"
-                                    >
-                                        ×
-                                    </button>
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <h3 className="font-medium">{project.name}</h3>
-                                            <p className="text-sm" style={{ color: themeColors.textMuted }}>{project.type}</p>
-                                        </div>
-                                        <span className="text-sm" style={{ color: themeColors.textMuted }}>{new Date(project.createdAt).toLocaleDateString()}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                    <section>
+                    <h2 className="text-xl font-semibold mb-4">All Projects</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                      
+                    {projects.map((project) => {
+  const isOwnerDeleted = !project.owner;
+  return (
+    <div
+      key={project._id}
+      className="flex flex-col justify-between p-5 rounded-2xl shadow-sm border transition hover:shadow-lg hover:border-purple-800"
+      style={{
+        backgroundColor: themeColors.primaryPurple + '40',
+        borderColor: themeColors.primaryPurple + '50',
+        color: themeColors.textLight,
+      }}
+    >
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-1">{project.name}</h3>
+        <p className="text-sm" style={{ color: themeColors.textMuted }}>{project.type}</p>
+        {isOwnerDeleted ? (
+          <>
+            <p className="text-sm mt-2">👤 <strong>User Deleted</strong></p>
+            <p className="text-xs" style={{ color: themeColors.textMuted }}>📧 N/A</p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm mt-2">👤 <strong>{project.owner.firstName} {project.owner.lastName}</strong></p>
+            <p className="text-xs" style={{ color: themeColors.textMuted }}>📧 {project.owner.email}</p>
+          </>
+        )}
+      </div>
+      <div>
+        <p className="text-xs mb-3" style={{ color: themeColors.textMuted }}>
+          🕒 Created on: {new Date(project.createdAt).toLocaleDateString()}
+        </p>
+        <button
+          onClick={() => handleDeleteProject(project._id)}
+          className="w-full py-2 rounded-lg font-medium"
+          style={{ backgroundColor: themeColors.accentPink + '30', color: themeColors.accentPink }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+})}
+
+                    </div>
+                  </section>
                 ) : (
                     <section className="rounded-xl p-6" style={{ backgroundColor: themeColors.primaryPurple + '15' }}>
                         <h2 className="text-xl font-semibold">Welcome to Admin Dashboard</h2>
@@ -280,7 +287,7 @@ const AdminDashboard = () => {
                             setSelectedUser(null);
                         }}
                         onUserUpdated={(updatedUser) => {
-                            setUsers(users.map(user => 
+                            setUsers(users.map(user =>
                                 user._id === updatedUser._id ? updatedUser : user
                             ));
                         }}

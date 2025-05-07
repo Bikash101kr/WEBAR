@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice'; // Adjust this path if needed
 import { themeColors } from '../../config/theme';
 
 const UserNavbar = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Clear localStorage (or sessionStorage)
+        localStorage.removeItem('token');  // Remove token if stored
+        // Dispatch logout to Redux
+        dispatch(logout());
+        // Redirect to login or homepage
+        navigate('/login');
+    };
 
     return (
         <header
@@ -13,7 +26,7 @@ const UserNavbar = () => {
             {/* Left: Logo + Navigation */}
             <div className="flex items-center gap-12">
                 <Link
-                    to="/"
+                    to="/dashboard"
                     className="text-3xl font-bold tracking-tight"
                     style={{
                         background: 'linear-gradient(45deg, #00C2CB, #6C5CE7)',
@@ -84,13 +97,14 @@ const UserNavbar = () => {
                                 border: `1px solid ${themeColors.primaryPurple}`,
                             }}
                         >
-                            <button
-                                className="w-full px-4 py-3 text-left hover:bg-purple-900/60 text-white"
-                                style={{ borderBottom: `1px solid ${themeColors.primaryPurple}` }}
+                            <Link
+                                to="/user/settings"
+                                className="block px-4 py-3 text-left hover:bg-purple-900/60 text-white border-b border-purple-700"
                             >
                                 Settings
-                            </button>
+                            </Link>
                             <button
+                                onClick={handleLogout}
                                 className="w-full px-4 py-3 text-left hover:bg-red-800/50 text-white"
                             >
                                 Logout

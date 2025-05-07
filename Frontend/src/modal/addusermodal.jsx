@@ -1,4 +1,4 @@
-// AddUserModal.jsx
+
 import React, { useState, useEffect, useRef } from "react";
 import API from "../services/api";
 import { themeColors } from "../config/theme";
@@ -35,7 +35,7 @@ const AddUserModal = ({ onClose, onUserAdded, positionRef }) => {
     }
   };
 
-  // Auto close if clicking outside
+  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {

@@ -19,6 +19,7 @@ connectDB();
 // Security Middlewares
 app.use(helmet()); // Set security HTTP headers
 app.use(hpp()); // Prevent parameter pollution
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -67,6 +68,8 @@ app.use(cors(corsOptions));
 //  Route Handlers
 app.use('/api/v1/auth', require('./routes/authRoutes'));
 app.use('/api/v1/users', require('./routes/userRoutes'));
+app.use('/api/v1/projects', require('./routes/projectRoutes'));
+app.use('/api/v1/templates', require('./routes/templateRoutes'));
 
 // Production Static Assets
 if (process.env.NODE_ENV === 'production') {

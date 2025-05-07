@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import HomePage from './homepage';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/slices/authSlice';
 import API from "../services/api";
+import HomePage from './homepage';
+import { themeColors } from "../config/theme";
+import { FaTimes } from 'react-icons/fa'; // Import cross icon from react-icons
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -34,14 +38,13 @@ const Login = () => {
       });
 
       const { token, data } = response.data;
+      dispatch(setUser({ user: data, token }));
 
-      // Save token and user details in local storage
       localStorage.setItem("token", token);
-      localStorage.setItem("role", data.role); // Corrected here
+      localStorage.setItem("role", data.role);
       localStorage.setItem("data", JSON.stringify(data));
 
-      // Redirect based on role
-      if (data.role === "admin") { // Using comparison operator here
+      if (data.role === "admin") {
         navigate("/admindash");
       } else {
         navigate("/dashboard");
@@ -53,41 +56,52 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    console.log("Google Sign-In clicked");
-    // Future: Add Google OAuth integration
-  };
+  // const handleGoogleSignIn = () => {
+  //   console.log("Google Sign-In clicked");
+  // };
 
-  const handleAppleSignIn = () => {
-    console.log("Apple Sign-In clicked");
-    // Future: Add Apple OAuth integration
-  };
+  // const handleAppleSignIn = () => {
+  //   console.log("Apple Sign-In clicked");
+  // };
 
   return (
-    <div className="relative min-h-screen bg-gray-50 p-4 sm:p-6 flex items-center justify-center">
+    <div className="relative min-h-screen p-4 sm:p-6 flex items-center justify-center" style={{ backgroundColor: themeColors.darkPurple }}>
       <div className="absolute inset-0 z-0 overflow-hidden">
         <HomePage />
       </div>
-      <div className="absolute inset-0 z-0 bg-black opacity-50 backdrop-blur-md mosaic-effect"></div>
+      <div className="absolute inset-0 z-0 bg-black opacity-60 backdrop-blur-sm"></div>
 
-      <div className="relative z-10 bg-white shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
+      <div className="relative z-10 bg-white/10 backdrop-blur-lg shadow-2xl rounded-xl p-6 sm:p-8 w-full max-w-md border border-white/20">
         <div className="text-center mb-6">
-          <Link to="/">
-            <button className="text-xl font-bold text-blue-600 hover:text-purple-950">
-              NextXR
-            </button>
+          <Link
+            to="/"
+            className="text-3xl font-bold tracking-tight"
+            style={{
+              background: 'linear-gradient(45deg, #00C2CB, #6C5CE7)',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              textShadow: '1px 1px 4px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            WEBAR
           </Link>
         </div>
 
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login Page</h1>
+        <h1 className="text-xl font-bold tracking-tight text-center mb-6" 
+            style={{
+              background: 'linear-gradient(45deg,  #2B1A5D, #00D2CB)',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
+            }}>Login to Your Account !</h1>
 
         {error && (
-          <div className="mb-4 text-red-600 text-center font-medium">{error}</div>
+          <div className="mb-4 text-red-400 text-center font-medium">{error}</div>
         )}
 
         <form className="mb-6" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: themeColors.textLight }}>
               Email
             </label>
             <input
@@ -98,12 +112,12 @@ const Login = () => {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-white/20 border border-white/30 text-white rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder:text-white/70"
             />
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium mb-1" style={{ color: themeColors.textLight }}>
               Password
             </label>
             <input
@@ -114,7 +128,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-white/20 border border-white/30 text-white rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder:text-white/70"
             />
           </div>
 
@@ -125,50 +139,43 @@ const Login = () => {
               name="rememberMe"
               checked={formData.rememberMe}
               onChange={handleInputChange}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="h-4 w-4 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
             />
-            <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-700">
+            <label htmlFor="rememberMe" className="ml-2 text-sm" style={{ color: themeColors.textLight }}>
               Remember Me
             </label>
           </div>
 
           <button
             type="submit"
-            className="bg-blue-500 text-white font-semibold rounded-lg px-4 py-2 w-full hover:bg-blue-600 transition"
+            className="w-full px-4 py-2 font-semibold rounded-lg hover:text-blue-400 transition "
+            style={{ backgroundColor: '#5a4ad7', color: themeColors.textLight,  transition: 'background-color 0.3s ease'}}
+                         onMouseEnter={(e) => e.target.style.backgroundColor = '#7a4ad7'} // Darker shade on hover
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#5a4ad7'} 
+                       
+                      
           >
             Login
           </button>
         </form>
 
-        <div className="flex items-center mb-6">
-          <hr className="flex-grow border-gray-300" />
-          <span className="px-2 text-gray-500 text-sm">OR</span>
-          <hr className="flex-grow border-gray-300" />
-        </div>
-
-        <div className="space-y-4">
-          <button
-            onClick={handleGoogleSignIn}
-            className="bg-red-500 text-white font-semibold rounded-lg px-4 py-2 w-full hover:bg-red-600 transition"
-          >
-            Sign in with Google
-          </button>
-          <button
-            onClick={handleAppleSignIn}
-            className="bg-black text-white font-semibold rounded-lg px-4 py-2 w-full hover:bg-gray-800 transition"
-          >
-            Sign in with Apple
-          </button>
-        </div>
-
         <div className="text-center mt-6">
-          <p className="text-gray-700 text-sm">
+          <p className="text-sm" style={{ color: themeColors.textLight }}>
             Don't have an account?{" "}
-            <Link to="/register" className="text-blue-500 hover:underline transition">
+            <Link to="/register" className="text-cyan-400 hover:underline transition">
               Sign Up
             </Link>
           </p>
         </div>
+
+        {/* Cancel Button */}
+        <button
+          onClick={() => navigate("/")}
+          className="absolute top-4 right-4 text-white text-xl font-bold hover:text-blue-400 transition"
+          title="Close"
+        >
+          <FaTimes />
+        </button>
       </div>
     </div>
   );

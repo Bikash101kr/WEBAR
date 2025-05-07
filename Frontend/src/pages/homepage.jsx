@@ -98,10 +98,10 @@ const HomePage = () => {
                         WEBAR
                     </Link>
                     <nav className="hidden md:flex ml-12 space-x-8">
-                        <Link to="/features" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Features</Link>
-                        <Link to="/solutions" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Solutions</Link>
+                        <Link to="/" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Features</Link>
+                        <Link to="/" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Solutions</Link>
                         <Link to="/pricing" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Pricing</Link>
-                        <Link to="/resources" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Resources</Link>
+                        <Link to="/" className="hover:opacity-80" style={{ color: themeColors.textLight }}>Resources</Link>
                     </nav>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -123,7 +123,7 @@ const HomePage = () => {
                             Build immersive AR experiences for web and mobile in minutes with our intuitive platform.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Link to="/create" className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: themeColors.primaryPurple }}>
+                            <Link to="/register" className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: themeColors.primaryPurple }}>
                                 Start Creating <FiArrowRight />
                             </Link>
                             <button className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: 'transparent', color: themeColors.textLight, border: `2px solid ${themeColors.primaryPurple}` }}>
@@ -204,10 +204,10 @@ const HomePage = () => {
                             Join thousands of creators and businesses building immersive experiences with our platform.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Link to="/signup" className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: themeColors.primaryPurple }}>
+                            <Link to="/register" className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: themeColors.primaryPurple }}>
                                 Get Started Free
                             </Link>
-                            <Link to="/demo" className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: 'transparent', color: themeColors.textLight, border: `2px solid ${themeColors.primaryPurple}` }}>
+                            <Link to="/register" className="px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90" style={{ backgroundColor: 'transparent', color: themeColors.textLight, border: `2px solid ${themeColors.primaryPurple}` }}>
                                 Request Demo
                             </Link>
                         </div>
@@ -228,25 +228,25 @@ const HomePage = () => {
                         <div>
                             <h4 className="font-bold mb-4">Product</h4>
                             <ul className="space-y-2">
-                                <li><Link to="/features" className="hover:underline" style={{ color: themeColors.textMuted }}>Features</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Features</Link></li>
                                 <li><Link to="/pricing" className="hover:underline" style={{ color: themeColors.textMuted }}>Pricing</Link></li>
-                                <li><Link to="/templates" className="hover:underline" style={{ color: themeColors.textMuted }}>Templates</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Templates</Link></li>
                             </ul>
                         </div>
                         <div>
                             <h4 className="font-bold mb-4">Resources</h4>
                             <ul className="space-y-2">
-                                <li><Link to="/blog" className="hover:underline" style={{ color: themeColors.textMuted }}>Blog</Link></li>
-                                <li><Link to="/tutorials" className="hover:underline" style={{ color: themeColors.textMuted }}>Tutorials</Link></li>
-                                <li><Link to="/docs" className="hover:underline" style={{ color: themeColors.textMuted }}>Documentation</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Blog</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Tutorials</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Documentation</Link></li>
                             </ul>
                         </div>
                         <div>
                             <h4 className="font-bold mb-4">Company</h4>
                             <ul className="space-y-2">
-                                <li><Link to="/about" className="hover:underline" style={{ color: themeColors.textMuted }}>About</Link></li>
-                                <li><Link to="/careers" className="hover:underline" style={{ color: themeColors.textMuted }}>Careers</Link></li>
-                                <li><Link to="/contact" className="hover:underline" style={{ color: themeColors.textMuted }}>Contact</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>About</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Careers</Link></li>
+                                <li><Link to="/" className="hover:underline" style={{ color: themeColors.textMuted }}>Contact</Link></li>
                             </ul>
                         </div>
                     </div>
